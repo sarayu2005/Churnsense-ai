@@ -118,7 +118,7 @@ Node.js and npm
 
 1. Clone the Repository
 
-git clone [https://github.com/your-username/churnsense-ai.git](https://github.com/your-username/churnsense-ai.git)
+git clone [https://github.com/sarayu2005/churnsense-ai.git](https://github.com/sarayu2005/churnsense-ai.git)
 cd churnsense-ai
 
 2. Backend Setup
