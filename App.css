@@ -1,0 +1,307 @@
+/* App.css - Dark Mode Colorful Theme for ChurnSense AI */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #18181b; /* dark zinc-900 */
+  color: #e4e4e7; /* zinc-200 */
+}
+
+h1, h2, h3 {
+  color: #22d3ee; /* cyan-400 */
+  text-align: center;
+  margin: 0 0 1rem 0;
+  font-weight: 800;
+  text-shadow: 0 0 8px rgba(34, 211, 238, 0.6);
+}
+
+h2, h3 {
+  color: #38bdf8; /* lighter cyan for subtitles */
+  font-weight: 700;
+  text-shadow: none;
+}
+
+/* Container styles from your JSX */
+.bg-zinc-800\/70 {
+  background-color: rgba(39, 39, 42, 0.7); /* translucent zinc-800 */
+}
+
+.backdrop-blur-md {
+  backdrop-filter: blur(8px);
+}
+
+/* Cards and boxes */
+.p-6 {
+  padding: 1.5rem;
+}
+
+.rounded-2xl {
+  border-radius: 1rem;
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.7), 0 4px 6px -2px rgba(0,0,0,0.6);
+}
+
+.border {
+  border-width: 1px;
+  border-style: solid;
+}
+
+.border-zinc-700 {
+  border-color: #3f3f46;
+}
+
+/* Inputs */
+input[type="file"], input[type="text"], select {
+  background-color: #27272a; /* zinc-700 */
+  color: #e4e4e7; /* zinc-200 */
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1.5px solid #52525b; /* zinc-600 */
+  outline: none;
+  width: 100%;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+input[type="file"]:focus, input[type="text"]:focus, select:focus {
+  border-color: #22d3ee; /* cyan-400 */
+  box-shadow: 0 0 8px rgba(34, 211, 238, 0.5);
+}
+
+/* Buttons */
+button {
+  display: inline-block;
+  width: 100%;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  user-select: none;
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.7);
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(34, 211, 238, 0.4);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Specific button colors */
+.bg-cyan-500 {
+  background: #06b6d4;
+}
+
+.bg-cyan-500:hover {
+  background: #0891b2;
+}
+
+.bg-purple-600 {
+  background: #7c3aed;
+}
+
+.bg-purple-600:hover {
+  background: #6d28d9;
+}
+
+.bg-pink-600 {
+  background: #db2777;
+}
+
+.bg-pink-600:hover {
+  background: #be185d;
+}
+
+.bg-green-600 {
+  background: #16a34a;
+}
+
+.bg-green-600:hover {
+  background: #15803d;
+}
+
+.bg-yellow-600 {
+  background: #ca8a04;
+}
+
+.bg-yellow-600:hover {
+  background: #a16207;
+}
+
+/* Grid Layout */
+.grid {
+  display: grid;
+}
+
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grid-cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.grid-cols-5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .md\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .md\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  
+  .md\:grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  
+  .md\:grid-cols-5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+/* Flexbox utilities */
+.flex {
+  display: flex;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+/* Spacing for vertical margins between buttons */
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.mt-6 {
+  margin-top: 1.5rem;
+}
+
+/* Text */
+.text-white {
+  color: #f9fafb;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Text colors */
+.text-zinc-200 {
+  color: #e4e4e7;
+}
+
+.text-zinc-300 {
+  color: #d4d4d8;
+}
+
+.text-cyan-300 {
+  color: #22d3ee;
+}
+
+.text-red-400 {
+  color: #f87171;
+}
+
+.text-green-400 {
+  color: #4ade80;
+}
+
+/* Images */
+img {
+  border-radius: 0.75rem;
+  border: 1px solid #3f3f46; /* zinc-700 */
+  max-width: 100%;
+  height: auto;
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+}
+
+/* Lists */
+.list-disc {
+  list-style-type: disc;
+}
+
+.list-inside {
+  list-style-position: inside;
+}
+
+ul {
+  padding-left: 1rem;
+  margin: 0;
+}
+
+/* Responsive max widths */
+.max-w-2xl {
+  max-width: 42rem; /* ~672px */
+}
+
+.max-w-4xl {
+  max-width: 64rem; /* ~1024px */
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.space-y-6 > * + * {
+  margin-top: 1.5rem;
+}
+
+.space-y-10 > * + * {
+  margin-top: 2.5rem;
+}
+
+.min-h-screen {
+  min-height: 100vh;
+}
+
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.py-10 {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+}
