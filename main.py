@@ -1,29 +1,32 @@
+# main.py
+
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
 import pandas as pd
 import shutil
 import base64
 import os
 
-from eda_utils import (
-    get_missing_values, plot_distributions, plot_correlation,
-    plot_churn_by_feature, plot_timeline, generate_pdf_report
-)
+from eda_utils import get_missing_values, plot_distributions, plot_correlation, plot_churn_by_feature, plot_timeline, generate_pdf_report
 from survival_utils import run_kaplan_meier, run_cox_model, get_risk_scores
 from ml_utils import run_complete_ml_pipeline
-# --- IMPORT THE NEW CAUSAL UTILS ---
 from causal_utils import run_causal_analysis
+from rl_utils import train_rl_agent, get_rl_recommendation
 
-# Define a Pydantic model for the PDF report request
 class ReportRequest(BaseModel):
     plots: list[str]
 
+# This Pydantic model now correctly matches your data and the frontend form
+class UserState(BaseModel):
+    age: int
+    monthly_fee: float
+    watch_hours: float
+
 app = FastAPI()
 
-# Enhanced CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
@@ -37,7 +40,6 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs("plots", exist_ok=True)
 os.makedirs("models", exist_ok=True)
 
-# Serve static files (plots, PDFs)
 app.mount("/plots", StaticFiles(directory="plots"), name="plots")
 
 @app.get("/")
@@ -53,7 +55,6 @@ async def upload_csv(file: UploadFile = File(...)):
 
         df = pd.read_csv(file_path)
 
-        # --- FIX: Explicitly find the churn column ---
         churn_column = None
         possible_churn_cols = ['churned', 'churn']
         for col in df.columns:
@@ -64,7 +65,6 @@ async def upload_csv(file: UploadFile = File(...)):
         if not churn_column:
             raise ValueError("A 'churned' or 'churn' column is required for analysis but was not found.")
 
-        # --- Improved time_column detection ---
         time_column = None
         possible_time_cols = ['tenure', 'time', 'duration', 'last_login_days']
         for col in df.columns:
@@ -73,7 +73,6 @@ async def upload_csv(file: UploadFile = File(...)):
                 break 
         
         if not time_column:
-            # Fallback to the first numeric column that isn't the churn column
             for col in df.columns:
                 if pd.api.types.is_numeric_dtype(df[col]) and col != churn_column:
                     time_column = col
@@ -109,7 +108,6 @@ async def run_eda(payload: dict):
             "timeline_plot": plot_timeline(df, time_col, churn_col) if time_col else None
         }
         
-        # Convert local paths to server URLs
         for key in results:
             if isinstance(results[key], str) and key.endswith('_plot'):
                 results[key] = "/" + results[key].replace("\\", "/")
@@ -120,6 +118,7 @@ async def run_eda(payload: dict):
         
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
+
 
 @app.post("/run-survival/")
 async def run_survival(payload: dict):
@@ -161,7 +160,6 @@ async def run_ml(payload: dict):
 
         ml_results = run_complete_ml_pipeline(df, churn_col)
         
-        # Convert plot paths to URLs
         for key in ml_results.get('plots', {}):
             if ml_results['plots'].get(key):
                 ml_results['plots'][key] = "/" + ml_results['plots'][key].replace("\\", "/")
@@ -171,7 +169,7 @@ async def run_ml(payload: dict):
     except Exception as e:
         return JSONResponse(content={"error": f"ML Pipeline failed: {e}"}, status_code=500)
 
-# --- NEW CAUSAL INFERENCE ENDPOINT ---
+
 @app.post("/run-causal/")
 async def run_causal(payload: dict):
     try:
@@ -182,12 +180,9 @@ async def run_causal(payload: dict):
 
         df = pd.read_csv(temp_path)
         
-        # For this example, we hardcode the treatment and outcome
-        # In a real app, you'd let the user select these
         treatment = 'monthly_fee'
         outcome = payload["churn_column"]
         
-        # Define common causes (potential confounders)
         common_causes = [col for col in df.columns if col not in [treatment, outcome, 'customer_id', 'last_login_days']]
         
         causal_results = run_causal_analysis(df, treatment, outcome, common_causes)
@@ -204,12 +199,22 @@ async def run_causal(payload: dict):
 @app.post("/generate-report/")
 async def generate_report(request: ReportRequest):
     try:
-        # Correctly handle incoming paths from the frontend
         corrected_plots = [p.lstrip('/') for p in request.plots if p]
         pdf_path = generate_pdf_report(corrected_plots)
         return JSONResponse(content={"pdf_url": "/" + pdf_path.replace("\\", "/")})
     except Exception as e:
         return JSONResponse(content={"error": f"Failed to generate report: {e}"}, status_code=500)
+
+
+@app.get("/train-rl/")
+async def stream_rl_training():
+    return StreamingResponse(train_rl_agent(), media_type="text/event-stream")
+
+@app.post("/get-rl-recommendation/")
+async def get_recommendation(user_state: UserState):
+    recommendation = get_rl_recommendation(user_state.dict())
+    return {"recommendation": recommendation}
+
 
 if __name__ == "__main__":
     import uvicorn
